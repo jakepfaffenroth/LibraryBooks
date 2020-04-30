@@ -1,6 +1,9 @@
 const submitBtn = document.querySelector('#submitBtn');
-const addBookBtn = document.querySelector('#addBook')
-const textEntryArea = document.querySelector('#textEntry')
+const addBookBtn = document.querySelector('#addBook');
+const cancelBtn = document.querySelector('#cancelBtn');
+const inputForm = document.querySelector('.modalWrapper');
+const modalOverlay = document.querySelector('.modalOverlay')
+const textEntryArea = document.querySelector('#textEntry');
 const libraryArea = document.querySelector('#libraryArea');
 let cardsAll = document.querySelectorAll('#card');
 let titleTxtBox = document.querySelector('#titleInput');
@@ -15,24 +18,24 @@ var booksDB = firebase.database().ref('books/');
 let myLibrary = [];
 
 // Makes sure these books are present when site loads
-fillBooks()
+fillBooks();
 function fillBooks() {
-booksDB.child('1984').set({
-    title: '1984',
-    author: 'George Orwell',
-    readStatus: true,
-});
-booksDB.child('Meditations').set({
-    title: 'Meditations',
-    author: 'Marcus Aurelius',
-    readStatus: false,
-});
-booksDB.child('The Hobbit').set({
-    title: 'The Hobbit',
-    author: 'J.R.R. Tolkien',
-    readStatus: true,
-});}
-
+    booksDB.child('1984').set({
+        title: '1984',
+        author: 'George Orwell',
+        readStatus: true,
+    });
+    booksDB.child('Meditations').set({
+        title: 'Meditations',
+        author: 'Marcus Aurelius',
+        readStatus: false,
+    });
+    booksDB.child('The Hobbit').set({
+        title: 'The Hobbit',
+        author: 'J.R.R. Tolkien',
+        readStatus: true,
+    });
+}
 
 booksDB.on('value', function (snapshot) {
     myLibrary = snapshotToArray(snapshot);
@@ -57,7 +60,7 @@ function snapshotToArray(snapshot) {
 function render() {
     // If Library is empty, display message
     if (myLibrary.length === 0) {
-        confirmationMsg.textContent = 'Read something!';
+        // confirmationMsg.textContent = 'Read something!';
     }
     while (libraryArea.hasChildNodes()) {
         libraryArea.removeChild(libraryArea.firstChild);
@@ -96,6 +99,7 @@ function render() {
         bookCard.appendChild(readBtn);
         bookCard.appendChild(readStatus);
         libraryArea.appendChild(bookCard);
+        window.getComputedStyle(bookCard).transition;
     });
     // titleTxtBox.value = '';
     // authorTxtBox.value = '';
@@ -130,7 +134,7 @@ function addBookToLibrary() {
     let authorInput = authorTxtBox.value;
     let readInput = readCheckBox.checked;
 
-    confirmationMsg.textContent = '';
+    // confirmationMsg.textContent = '';
 
     if (titleInput === '' || authorInput === '') {
         return;
@@ -139,7 +143,7 @@ function addBookToLibrary() {
 
         addBookToDB(titleInput, authorInput, readInput);
 
-        confirmationMsg.textContent = `Added book: ${titleInput} by ${authorInput}`;
+        // confirmationMsg.textContent = `Added book: ${titleInput} by ${authorInput}`;
         render();
         console.log('Added to library:');
         console.table(myLibrary);
@@ -157,7 +161,7 @@ function addBookToDB(title, author, readStatus) {
 }
 
 // Removes book from myLibrary
-function deleteBook(x) {
+function deleteBook(index, x) {
     var bookToRemove = firebase.database().ref('books/' + x);
 
     bookToRemove.remove();
@@ -166,11 +170,30 @@ function deleteBook(x) {
     render();
 }
 
+function clearTxtBoxes() {
+    titleTxtBox.value = ""
+    authorTxtBox.value = ""
+    readCheckBox.checked=false;
+}
 // ----- BUTTONS ----- //
-// submitBtn.addEventListener('click', addBookToLibrary);
 addBookBtn.addEventListener('click', function () {
-    textEntryArea.style.display = "block"
-})
+    inputForm.style.visibility = 'visible';
+});
+
+submitBtn.addEventListener('click', function () {
+    addBookToLibrary()
+    clearTxtBoxes()
+    inputForm.style.visibility='hidden'
+});
+
+cancelBtn.addEventListener('click', function () {
+    inputForm.style.visibility = 'hidden';
+    clearTxtBoxes()
+});
+modalOverlay.addEventListener('click', function () {
+    inputForm.style.visibility = 'hidden';
+    clearTxtBoxes()
+});
 
 function activateBtns() {
     allReadButtons.forEach((btn) => {
