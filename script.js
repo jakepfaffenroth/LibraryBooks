@@ -178,20 +178,24 @@ function clearTxtBoxes() {
 // ----- BUTTONS ----- //
 addBookBtn.addEventListener('click', function () {
     inputForm.style.visibility = 'visible';
+    inputForm.style.opacity = '1';
 });
 
 submitBtn.addEventListener('click', function () {
     addBookToLibrary()
     clearTxtBoxes()
     inputForm.style.visibility='hidden'
+    inputForm.style.opacity='0'
 });
 
 cancelBtn.addEventListener('click', function () {
     inputForm.style.visibility = 'hidden';
+    inputForm.style.opacity = '0';
     clearTxtBoxes()
 });
 modalOverlay.addEventListener('click', function () {
     inputForm.style.visibility = 'hidden';
+    inputForm.style.opacity = '0';
     clearTxtBoxes()
 });
 

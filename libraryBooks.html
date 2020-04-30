@@ -5,6 +5,10 @@
         <title>My Library</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- Material Design Components -->
+        <link href="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.css" rel="stylesheet">
+        <script src="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.js"></script>
+        
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
@@ -19,18 +23,17 @@
         <button id="addBook">Add Book</button>
     </div>
     <hr>
-    <div id="textEntry">
-        
-    </div>
     <div id="libraryArea">
     </div>
 </div>
 <div class="modalWrapper">
     <div id="inputForm" class="modalBox">
         <div class="modalContent">
-            <h2 class="formTitle">Add a new book</h2>
+            <h2 class="formTitle">Add a book to your library</h2>
             <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum, est ipsa.
+                Enter the title and author, and mark as read or not.
+                <br>
+                NOTE: If a book by the same title is already in your library, this will replace it!
             </p>
             <div id="inputArea">
                 <div class="txtBox">
@@ -41,11 +44,22 @@
                     <input type="text" placeholder="Author" label="Author" name="Author" id="authorInput" class="txtField">
                     <!-- <label for="authorInput" class="txtBoxLabel">Author</label> -->
                 </div>
-                <div>
-                    <input type="checkbox" class="checkbox">
-                    <span></span>
-                </div>
-                
+                <div class="mdc-checkbox">
+                    <input type="checkbox"
+                        class="mdc-checkbox__native-control"
+                        id="readInput"/>
+                    <div class="mdc-checkbox__background">
+                        <svg class="mdc-checkbox__checkmark"
+                            viewBox="0 0 24 24">
+                            <path class="mdc-checkbox__checkmark-path"
+                                fill="none"
+                                d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+                        </svg>
+                        <div class="mdc-checkbox__mixedmark"></div>
+                    </div>
+                    <div class="mdc-checkbox__ripple"></div>
+            </div>
+            <label for="readInput" class="cbLabel">Read?</label>
             </div>
         </div>
         <div class="modalFooter">
