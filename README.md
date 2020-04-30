@@ -9,5 +9,5 @@ for
 
 ## TODO:
 
-Add book sorting method (firebase sorting)
-Add user logins
+* Add book sorting method (firebase sorting)
+* Add user logins
