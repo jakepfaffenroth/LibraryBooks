@@ -33,12 +33,19 @@
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum, est ipsa.
             </p>
             <div id="inputArea">
-                <label for="Title">Title:</label>
-                <input type="text" label="Title" name="Title" id="titleInput">
-                <label for="Read">Read?</label>
-                <input type="checkbox" label="Read" name="Read" id="readInput"><br>
-                <label for="Author">Author:</label>
-                <input type="text" name="Author" id="authorInput">
+                <div class="txtBox">
+                    <input type="text" placeholder="Title" label="Title" name="Title" id="titleInput" class="txtField">
+                    <!-- <label for="titleInput" class="txtBoxLabel">Title</label> -->
+                </div>
+                <div class="txtBox">
+                    <input type="text" placeholder="Author" label="Author" name="Author" id="authorInput" class="txtField">
+                    <!-- <label for="authorInput" class="txtBoxLabel">Author</label> -->
+                </div>
+                <div>
+                    <input type="checkbox" class="checkbox">
+                    <span></span>
+                </div>
+                
             </div>
         </div>
         <div class="modalFooter">
