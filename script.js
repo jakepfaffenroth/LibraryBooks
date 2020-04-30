@@ -8,47 +8,40 @@ const confirmationMsg = document.querySelector('#entryConfirmation');
 let allDeleteBtns = [];
 let allReadBtns = [];
 
+var firebaseDB = firebase.database().ref();
+var booksDB = firebase.database().ref('books/');
 let myLibrary = [];
 
-myLibrary.push(new Book('The Hobbit', 'J.R.R. Tolkien', true));
-myLibrary.push(new Book('1984', 'George Orwell', true));
-myLibrary.push(new Book('Meditations', 'Marcus Aurelius', false));
+booksDB.on('value', function (snapshot) {
+    myLibrary = snapshotToArray(snapshot);
+    console.log('mylibrary (outside):');
+    console.table(myLibrary);
+    render()
+});
 
-render();
+function snapshotToArray(snapshot) {
+    var snapLibrary = [];
+    snapshot.forEach(function (childSnapshot) {
+        var object = childSnapshot.val();
+        object.key = childSnapshot.key;
 
-function Book(title, author, read) {
-    this.title = title;
-    this.author = author;
-    this.read = read;
+        snapLibrary.push(object);
+    });
+
+    return snapLibrary;
 }
 
-// TODO: Create popup form for book entry instead of the text fields
-function addBookToLibrary() {
-    let titleInput = titleTxtBox.value;
-    let authorInput = authorTxtBox.value;
-    let readInput = readCheckBox.checked;
-    confirmationMsg.textContent = '';
-
-    if (titleInput === '' || authorInput === '') {
-        return;
-    } else {
-        confirmationMsg.textContent = `Added book: ${titleInput} by ${authorInput}`;
-        myLibrary.push(new Book(titleInput, authorInput, readInput));
-        // book.add(titleInput, authorInput);
-
-        render();
-        console.table(myLibrary);
-    }
-}
-
-// TODO: Create cards
+// ----- RENDER PAGE ----- //
 function render() {
+    // If Library is empty, display msg
     if (myLibrary.length === 0) {
         confirmationMsg.textContent = 'Read something!';
     }
     while (libraryArea.hasChildNodes()) {
         libraryArea.removeChild(libraryArea.firstChild);
     }
+
+    // Creates dom elements for each book in Library
     myLibrary.forEach((book) => {
         var bookCard = document.createElement('p');
         var bookTitle = document.createElement('p');
@@ -58,7 +51,6 @@ function render() {
         var readBtn = document.createElement('button');
 
         bookCard.classList.add('bookCard');
-        // bookInfo.classList = 'bookInfo';
         bookTitle.classList.add('bookTitle');
         bookAuthor.classList.add('bookAuthor');
         readStatus.classList.add('bookRead', 'notRead');
@@ -71,19 +63,17 @@ function render() {
         deleteBtn.id = book.title;
         readBtn.id = book.title;
 
-        if (book.read == true) {
+        if (book.readStatus == true) {
             readStatus.classList.remove('notRead');
             readStatus.classList.add('read');
         }
 
-        // bookCard.appendChild(bookInfo);
         bookCard.appendChild(bookTitle);
         bookCard.appendChild(bookAuthor);
         bookCard.appendChild(deleteBtn);
         bookCard.appendChild(readBtn);
         bookCard.appendChild(readStatus);
         libraryArea.appendChild(bookCard);
-        // console.table(myLibrary);
     });
     titleTxtBox.value = '';
     authorTxtBox.value = '';
@@ -91,29 +81,78 @@ function render() {
 
     allDeleteBtns = document.querySelectorAll('.deleteBtn');
     allReadButtons = document.querySelectorAll('.readBtn');
+
+    // Reload button event listeners when new bookCards are rendered
     activateBtns();
+
+    // Toggle readStatus
     Object.prototype.readToggle = function (book) {
-        console.log(book.read);
-        book.read === true ? book.read=false : book.read=true;
-        console.log(book.read);
+        var bookRef = booksDB.child(book.title).child('readStatus');
+        bookRef.transaction(function (readStatus) {
+            return (readStatus = !readStatus);
+        });
     };
 }
 
+// Object constructor for new books
+// Feed in info and it assembles an object
+function Book(title, author, readStatus) {
+    this.title = title;
+    this.author = author;
+    this.readStatus = readStatus;
+}
+
+// Pushes book to myLibrary and displayed "added..." msg
+function addBookToLibrary() {
+    let titleInput = titleTxtBox.value;
+    let authorInput = authorTxtBox.value;
+    let readInput = readCheckBox.checked;
+
+    confirmationMsg.textContent = '';
+
+    if (titleInput === '' || authorInput === '') {
+        return;
+    } else {
+        // myLibrary.push(new Book(titleInput, authorInput, readInput));
+
+        addBookToDB(titleInput, authorInput, readInput);
+
+        confirmationMsg.textContent = `Added book: ${titleInput} by ${authorInput}`;
+        render();
+        console.log('Added to library:');
+        console.table(myLibrary);
+    }
+}
+
+// Pushes book to Firebase (called from addBookToLibrary)
+function addBookToDB(title, author, readStatus) {
+    console.log('added: ' + title);
+    booksDB.child(title).set({
+        title: title,
+        author: author,
+        readStatus: readStatus,
+    });
+}
+
+// Removes book from myLibrary
 function deleteBook(index) {
+    // booksDB.remove()
     myLibrary.splice(index, 1);
     console.table(myLibrary);
     render();
 }
 
+// ----- BUTTONS ----- //
 submitBtn.addEventListener('click', addBookToLibrary);
-// TODO: On clicking read toggle, having trouble retrieving the book object in order to change the read status.
+
 function activateBtns() {
     allReadButtons.forEach((btn) => {
         btn.addEventListener('click', (e) => {
             const index = myLibrary.findIndex((book) => book.title === btn.id);
-            let book = myLibrary[index]
+            let book = myLibrary[index];
             console.log(book.title);
             book.readToggle(book);
+            // readToggle(book);
             console.table(myLibrary);
             render();
         });

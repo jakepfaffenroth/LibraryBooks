@@ -25,9 +25,39 @@
     <div id="libraryArea">
 
     </div>
+    
 </div>
 
 
-        <script src="script.js" async defer></script>
-    </body>
+        
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-app.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+     <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-database.js"></script>
+
+
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyBWWGGJF1ygWf-QuQjx4vEGlT5tYgVjOQc",
+    authDomain: "my-library-b9958.firebaseapp.com",
+    databaseURL: "https://my-library-b9958.firebaseio.com",
+    projectId: "my-library-b9958",
+    storageBucket: "my-library-b9958.appspot.com",
+    messagingSenderId: "254631600479",
+    appId: "1:254631600479:web:31ccac32fc3cc3aee716ea"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+</script>
+
+<script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-database.js"></script>
+
+ <!-- Web app script.js -->
+    <script src="script.js" async defer></script>  
+    
+
+</body>
 </html>
