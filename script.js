@@ -1,6 +1,8 @@
 const submitBtn = document.querySelector('#submitBtn');
+const addBookBtn = document.querySelector('#addBook')
+const textEntryArea = document.querySelector('#textEntry')
 const libraryArea = document.querySelector('#libraryArea');
-let bookCardsAll = document.querySelectorAll('#bookCard');
+let cardsAll = document.querySelectorAll('#card');
 let titleTxtBox = document.querySelector('#titleInput');
 let authorTxtBox = document.querySelector('#authorInput');
 let readCheckBox = document.querySelector('#readInput');
@@ -95,14 +97,14 @@ function render() {
         bookCard.appendChild(readStatus);
         libraryArea.appendChild(bookCard);
     });
-    titleTxtBox.value = '';
-    authorTxtBox.value = '';
-    readCheckBox.checked = false;
+    // titleTxtBox.value = '';
+    // authorTxtBox.value = '';
+    // readCheckBox.checked = false;
 
     allDeleteBtns = document.querySelectorAll('.deleteBtn');
     allReadButtons = document.querySelectorAll('.readBtn');
 
-    // Reload button event listeners when new bookCards are rendered
+    // Reload button event listeners when new book cards are rendered
     activateBtns();
 
     // Toggle readStatus
@@ -155,7 +157,7 @@ function addBookToDB(title, author, readStatus) {
 }
 
 // Removes book from myLibrary
-function deleteBook(index, x) {
+function deleteBook(x) {
     var bookToRemove = firebase.database().ref('books/' + x);
 
     bookToRemove.remove();
@@ -165,7 +167,10 @@ function deleteBook(index, x) {
 }
 
 // ----- BUTTONS ----- //
-submitBtn.addEventListener('click', addBookToLibrary);
+// submitBtn.addEventListener('click', addBookToLibrary);
+addBookBtn.addEventListener('click', function () {
+    textEntryArea.style.display = "block"
+})
 
 function activateBtns() {
     allReadButtons.forEach((btn) => {
