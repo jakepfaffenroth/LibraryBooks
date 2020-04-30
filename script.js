@@ -12,11 +12,31 @@ var firebaseDB = firebase.database().ref();
 var booksDB = firebase.database().ref('books/');
 let myLibrary = [];
 
+// Makes sure these books are present when site loads
+fillBooks()
+function fillBooks() {
+booksDB.child('1984').set({
+    title: '1984',
+    author: 'George Orwell',
+    readStatus: true,
+});
+booksDB.child('Meditations').set({
+    title: 'Meditations',
+    author: 'Marcus Aurelius',
+    readStatus: false,
+});
+booksDB.child('The Hobbit').set({
+    title: 'The Hobbit',
+    author: 'J.R.R. Tolkien',
+    readStatus: true,
+});}
+
+
 booksDB.on('value', function (snapshot) {
     myLibrary = snapshotToArray(snapshot);
     console.log('mylibrary (outside):');
     console.table(myLibrary);
-    render()
+    render();
 });
 
 function snapshotToArray(snapshot) {
@@ -33,7 +53,7 @@ function snapshotToArray(snapshot) {
 
 // ----- RENDER PAGE ----- //
 function render() {
-    // If Library is empty, display msg
+    // If Library is empty, display message
     if (myLibrary.length === 0) {
         confirmationMsg.textContent = 'Read something!';
     }
@@ -135,10 +155,12 @@ function addBookToDB(title, author, readStatus) {
 }
 
 // Removes book from myLibrary
-function deleteBook(index) {
-    // booksDB.remove()
-    myLibrary.splice(index, 1);
-    console.table(myLibrary);
+function deleteBook(index, x) {
+    var bookToRemove = firebase.database().ref('books/' + x);
+
+    bookToRemove.remove();
+    // myLibrary.splice(index, 1);
+
     render();
 }
 
@@ -150,10 +172,7 @@ function activateBtns() {
         btn.addEventListener('click', (e) => {
             const index = myLibrary.findIndex((book) => book.title === btn.id);
             let book = myLibrary[index];
-            console.log(book.title);
             book.readToggle(book);
-            // readToggle(book);
-            console.table(myLibrary);
             render();
         });
     });
@@ -161,9 +180,8 @@ function activateBtns() {
     allDeleteBtns.forEach(function (btn) {
         btn.addEventListener('click', (e) => {
             const index = myLibrary.findIndex((book) => book.title === btn.id);
-            console.log('obj title: ' + myLibrary[index].title);
-            console.log(index);
-            deleteBook(index);
+            var x = myLibrary[index].title;
+            deleteBook(index, x);
         });
     });
 }
